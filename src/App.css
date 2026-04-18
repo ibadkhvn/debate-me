@@ -47,6 +47,8 @@ h1 {
   transition: all 0.2s;
   text-transform: none;
   letter-spacing: 0;
+  text-align: left;
+  border-radius: 20px;
 }
 
 .suggestion-pill:hover {
@@ -215,6 +217,19 @@ h1 {
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s;
+}
+.message.verdict .message-role {
+  color: #a78bfa;
+}
+
+.message.verdict .message-content {
+  color: #e8e8e8;
+  border-left: 2px solid #a78bfa;
+  padding-left: 12px;
+}
+.thinking {
+  color: #444;
+  font-style: italic;
 }
 
 .input-row button:hover {

@@ -7,6 +7,7 @@ function App() {
   const [input, setInput] = useState("")
   const [topic, setTopic] = useState("")
   const [debateStarted, setDebateStarted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const suggestedTopics = [
     "Social media does more harm than good",
@@ -16,6 +17,12 @@ function App() {
     "Space exploration is a waste of money",
     "Homework should be abolished",
   ]
+
+  const resetDebate = () => {
+    setMessages([])
+    setTopic("")
+    setDebateStarted(false)
+  }
 
   const startDebate = () => {
     if (topic) setDebateStarted(true)
@@ -27,6 +34,7 @@ function App() {
     const newMessages = [...messages, { role: "user", content: input }]
     setMessages(newMessages)
     setInput("")
+    setLoading(true)
 
     const response = await fetch("http://localhost:3000/debate", {
       method: "POST",
@@ -36,12 +44,26 @@ function App() {
 
     const data = await response.json()
     setMessages([...newMessages, { role: "assistant", content: data.reply }])
+    setLoading(false)
+  }
+
+  const getVerdict = async () => {
+    setLoading(true)
+    const response = await fetch("http://localhost:3000/debate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages, topic, stance: "for", verdict: true })
+    })
+
+    const data = await response.json()
+    setMessages([...messages, { role: "verdict", content: data.reply }])
+    setLoading(false)
   }
 
   if (!debateStarted) {
     return (
       <div className="container">
-        <h1>Debate Me</h1>
+        <h1 onClick={resetDebate} style={{ cursor: "pointer" }}>Debate Me</h1>
         <p className="subtitle">Argue your point. We'll push back.</p>
         <div className="topic-screen">
           <input
@@ -65,7 +87,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Debate Me</h1>
+      <h1 onClick={resetDebate} style={{ cursor: "pointer" }}>Debate Me</h1>
       <p className="subtitle">Argue your point. We'll push back.</p>
       <div className="debate-screen">
         <div>
@@ -74,13 +96,21 @@ function App() {
         </div>
         <div className="messages">
           {messages.map((msg, i) => (
-            <div key={i} className={`message ${msg.role === "user" ? "user" : "ai"}`}>
-              <span className="message-role">{msg.role === "user" ? "You" : "AI"}</span>
+            <div key={i} className={`message ${msg.role === "user" ? "user" : msg.role === "verdict" ? "verdict" : "ai"}`}>
+              <span className="message-role">
+                {msg.role === "user" ? "You" : msg.role === "verdict" ? "Verdict" : "AI"}
+              </span>
               <div className="message-content">
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                {msg.content && <ReactMarkdown>{msg.content}</ReactMarkdown>}
               </div>
             </div>
           ))}
+          {loading && (
+            <div className="message ai">
+              <span className="message-role">AI</span>
+              <div className="message-content thinking">Thinking...</div>
+            </div>
+          )}
         </div>
         <div className="input-row">
           <input
@@ -89,6 +119,7 @@ function App() {
             placeholder="Make your argument..."
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           />
+          <button onClick={getVerdict}>Verdict ⚖</button>
           <button onClick={sendMessage}>Send →</button>
         </div>
       </div>
