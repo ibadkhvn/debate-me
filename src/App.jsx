@@ -8,6 +8,15 @@ function App() {
   const [topic, setTopic] = useState("")
   const [debateStarted, setDebateStarted] = useState(false)
 
+  const suggestedTopics = [
+    "Social media does more harm than good",
+    "AI will take over most jobs in 10 years",
+    "Remote work is better than office work",
+    "Pineapple belongs on pizza",
+    "Space exploration is a waste of money",
+    "Homework should be abolished",
+  ]
+
   const startDebate = () => {
     if (topic) setDebateStarted(true)
   }
@@ -41,6 +50,13 @@ function App() {
             placeholder="Enter a topic to debate..."
             onKeyDown={(e) => e.key === "Enter" && startDebate()}
           />
+          <div className="suggestions">
+            {suggestedTopics.map((t, i) => (
+              <button key={i} className="suggestion-pill" onClick={() => setTopic(t)}>
+                {t}
+              </button>
+            ))}
+          </div>
           <button onClick={startDebate}>Begin →</button>
         </div>
       </div>
@@ -61,8 +77,8 @@ function App() {
             <div key={i} className={`message ${msg.role === "user" ? "user" : "ai"}`}>
               <span className="message-role">{msg.role === "user" ? "You" : "AI"}</span>
               <div className="message-content">
-  <ReactMarkdown>{msg.content}</ReactMarkdown>
-</div>
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              </div>
             </div>
           ))}
         </div>

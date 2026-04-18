@@ -29,6 +29,30 @@ h1 {
   color: #ffffff;
   margin-bottom: 0.25rem;
 }
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.suggestion-pill {
+  background: transparent;
+  color: #555;
+  border: 1px solid #222;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.suggestion-pill:hover {
+  color: #ffffff;
+  border-color: #555;
+}
 
 .subtitle {
   font-size: 0.85rem;
