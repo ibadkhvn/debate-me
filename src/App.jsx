@@ -1,4 +1,6 @@
 import { useState } from "react"
+import "./App.css"
+import ReactMarkdown from "react-markdown"
 
 function App() {
   const [messages, setMessages] = useState([])
@@ -29,33 +31,51 @@ function App() {
 
   if (!debateStarted) {
     return (
-      <div>
+      <div className="container">
         <h1>Debate Me</h1>
-        <input
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          placeholder="Enter a debate topic..."
-        />
-        <button onClick={startDebate}>Start Debate</button>
+        <p className="subtitle">Argue your point. We'll push back.</p>
+        <div className="topic-screen">
+          <input
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder="Enter a topic to debate..."
+            onKeyDown={(e) => e.key === "Enter" && startDebate()}
+          />
+          <button onClick={startDebate}>Begin →</button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div>
-      <h1>Topic: {topic}</h1>
-      <div>
-        {messages.map((msg, i) => (
-          <p key={i}><b>{msg.role === "user" ? "You" : "AI"}:</b> {msg.content}</p>
-        ))}
+    <div className="container">
+      <h1>Debate Me</h1>
+      <p className="subtitle">Argue your point. We'll push back.</p>
+      <div className="debate-screen">
+        <div>
+          <p className="topic-label">Topic</p>
+          <p className="topic-title">{topic}</p>
+        </div>
+        <div className="messages">
+          {messages.map((msg, i) => (
+            <div key={i} className={`message ${msg.role === "user" ? "user" : "ai"}`}>
+              <span className="message-role">{msg.role === "user" ? "You" : "AI"}</span>
+              <div className="message-content">
+  <ReactMarkdown>{msg.content}</ReactMarkdown>
+</div>
+            </div>
+          ))}
+        </div>
+        <div className="input-row">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Make your argument..."
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button onClick={sendMessage}>Send →</button>
+        </div>
       </div>
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type your argument..."
-        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-      />
-      <button onClick={sendMessage}>Send</button>
     </div>
   )
 }
