@@ -36,7 +36,7 @@ function App() {
     setInput("")
     setLoading(true)
 
-    const response = await fetch("http://localhost:3000/debate", {
+    const response = await fetch("https://debate-me-production.up.railway.app/debate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: newMessages, topic, stance: "for" })
@@ -49,7 +49,7 @@ function App() {
 
   const getVerdict = async () => {
     setLoading(true)
-    const response = await fetch("http://localhost:3000/debate", {
+    const response = await fetch("https://debate-me-production.up.railway.app/debate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages, topic, stance: "for", verdict: true })
